@@ -25,17 +25,17 @@ const UserResolver = {
     // Create User
     createUser: async (_: any, { input }: { input: CreateUserInput }) => {
       const { email, fullname, username, password, confirm_password } = input;
-
+    
       try {
         // Check if user already exists
         const existingUser = await user.findOne({ email });
         if (existingUser) {
           throw new Error('Email already exists');
         }
-
+    
         // Hash password
         const hashedPassword = await bcrypt.hash(password, 12);
-
+    
         // Create new user
         const newUser = await user.create({
           fullname,
@@ -43,17 +43,53 @@ const UserResolver = {
           email,
           password: hashedPassword,
         });
-
+    
         // Create JWT token
         const { _id } = newUser;
         const signatureToken = jwt.sign({ id: _id }, jwtsecret, { expiresIn: '30mins' });
-
-        return { token: signatureToken };
+    
+        // Return the new user's email and fullname along with the JWT token
+        return { email: newUser.email, fullname: newUser.fullname, token: signatureToken };
       } catch (error) {
         console.error(error);
         throw error;
       }
     },
+    
+    
+    
+
+    // createUser: async (_: any, { input }: { input: CreateUserInput }) => {
+    //   const { email, fullname, username, password, confirm_password } = input;
+
+    //   try {
+    //     // Check if user already exists
+    //     const existingUser = await user.findOne({ email });
+    //     if (existingUser) {
+    //       throw new Error('Email already exists');
+    //     }
+
+    //     // Hash password
+    //     const hashedPassword = await bcrypt.hash(password, 12);
+
+    //     // Create new user
+    //     const newUser = await user.create({
+    //       fullname,
+    //       username,
+    //       email,
+    //       password: hashedPassword,
+    //     });
+
+    //     // Create JWT token
+    //     const { _id } = newUser;
+    //     const signatureToken = jwt.sign({ id: _id }, jwtsecret, { expiresIn: '30mins' });
+
+    //     return { token: signatureToken };
+    //   } catch (error) {
+    //     console.error(error);
+    //     throw error;
+    //   }
+    // },
     // Login User
     // login: async (_: any, { input }: { input: LoginInput }, { res }: any) => {
     //   try {

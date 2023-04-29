@@ -48,7 +48,7 @@ type Query {
 
 type Mutation {
     createMovie(inputType: MovieInput!): MovieSchema!
-    createUser(input: CreateUserInput!): UserSchema!
+    createUser(input: CreateUserInput!): UserSchema
     logout: Boolean!
     updateMovie(id: ID!, input: MovieInput!): MovieSchema!
     deleteMovie(id: ID!): Message!
